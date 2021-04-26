@@ -1,0 +1,42 @@
+---
+# tasks file for wordpress-mysql
+
+- name: "pulling Wordpress image"  
+  shell: "kubectl run mywordpress --image=wordpress:5.1.1-php7.3-apache"
+  register: status1
+
+- debug:
+        var: status1['stdout_lines']
+
+- name: "pulling MySQL image"
+  shell: "kubectl run mydatabase --image=mysql:5.7 --env=MYSQL_ROOT_PASSWORD=xyz --env=MYSQL_DATABASE=wpdb --env=MYSQL_USER=xyz --env=MYSQL_PASSWORD=xyz"
+  register: status2
+
+- debug:
+        var: status2['stdout_lines']
+
+- name: "Exposing Wordpress"
+  command: "kubectl expose pods mywordpress --type=NodePort --port=80"
+  register: status3
+
+- debug:
+        var: status3['stdout_lines']
+
+- name: "Checking all services"
+  command: "kubectl get services"
+  register: status4
+
+- debug: 
+        var: status4['stdout_lines'] 
+
+- name: "pausing playbook for pods to launch so that we can get their ips"
+  pause:
+        seconds: 60
+
+- name: "checking pods launched to get ip addresses"
+  command: "kubectl get pods -o wide"
+  register: status5
+
+- debug:
+        var: status5['stdout_lines']
+

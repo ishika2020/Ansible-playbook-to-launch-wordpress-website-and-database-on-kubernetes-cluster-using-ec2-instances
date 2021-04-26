@@ -1,0 +1,11 @@
+- hosts: tag_Name_masternode
+  roles:
+  - Masternode
+     
+- hosts: tag_Name_worker
+  roles:
+  - Workernode
+
+- hosts: tag_Name_masternode
+  roles:
+  - wordpress-mysql        
